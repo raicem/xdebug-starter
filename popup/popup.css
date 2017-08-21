@@ -1,0 +1,69 @@
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.wrapper {
+    width: 150px;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.button {
+    min-width: 125px;
+    background-color: transparent;
+    color: #ff3860;
+    height: 2.25em;
+    padding: 0 0.75em;
+    margin: 0.5em 0;
+    border: 1px solid #ff3860;
+    border-radius: 3px;
+    text-align: center;
+    line-height: 1.5;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.button.active {
+    background-color: transparent;
+    border-color: #23d160;
+    color: #23d160;
+}
+
+.settings-button {
+    width: 100%;
+    display: block;
+}
+
+#settings-icon {
+    clear: both;
+    width: 15px;
+    cursor: pointer;
+    margin-left: 0.75em;
+    margin-bottom: 0.5em;
+}
+
+.settings-section {
+    display: block;
+    width: 100%;
+    padding: 0.5em;
+}
+
+.settings-section label,
+.settings-section input {
+    display: block;
+    width: 100%;
+}
+
+.hidden {
+    display: none;
+}
