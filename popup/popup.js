@@ -1,116 +1,147 @@
-const buttons = {
-  debugging: document.getElementById('debugging'),
-  tracing: document.getElementById('tracing'),
-  profiling: document.getElementById('profiling'),
-};
+const XdebugStarter = {
+  buttons: {},
 
-const ideKeyInput = document.getElementById('idekey_setting');
-const settingsButton = document.getElementById('settings-button');
-const settingsSection = document.getElementById('settings-section');
-const settingsSaveButton = document.getElementById('settings-save-button');
-const settingsCancelButton = document.getElementById('settings-cancel-button');
+  ideKey: '',
 
-const state = {
-  debugging: 0,
-  tracing: 0,
-  profiling: 0,
-};
+  state: {
+    debugging: 0,
+    tracing: 0,
+    profiling: 0,
+  },
 
-function getActiveTab() {
-  return browser.tabs.query({
+  attachHandlers: () => {
+    XdebugStarter.buttons.debugging = document.getElementById('debugging');
+    XdebugStarter.buttons.tracing = document.getElementById('tracing');
+    XdebugStarter.buttons.profiling = document.getElementById('profiling');
+
+    XdebugStarter.ideKeyInput = document.getElementById('idekey_setting');
+
+    XdebugStarter.settingsIcon = document.getElementById('settings-icon');
+    XdebugStarter.settingsSection = document.getElementById('settings-section');
+    XdebugStarter.settingsSaveButton = document.getElementById('settings-save-button');
+    XdebugStarter.settingsCancelButton = document.getElementById('settings-cancel-button');
+  },
+
+  attachListeners: () => {
+    XdebugStarter.buttons.debugging.addEventListener('click', () => {
+      if (XdebugStarter.state.debugging === 1) {
+        XdebugStarter.removeCookie('XDEBUG_SESSION').then(XdebugStarter.updateState);
+      } else {
+        const ideKey = localStorage.getItem('idekey');
+        XdebugStarter.setCookie('XDEBUG_SESSION', ideKey).then(XdebugStarter.updateState);
+      }
+    });
+
+    XdebugStarter.buttons.tracing.addEventListener('click', () => {
+      if (XdebugStarter.state.tracing === 1) {
+        XdebugStarter.removeCookie('XDEBUG_TRACE').then(XdebugStarter.updateState);
+      } else {
+        XdebugStarter.setCookie('XDEBUG_TRACE', '1').then(XdebugStarter.updateState);
+      }
+    });
+
+    XdebugStarter.buttons.profiling.addEventListener('click', () => {
+      if (XdebugStarter.state.profiling === 1) {
+        XdebugStarter.removeCookie('XDEBUG_PROFILE').then(XdebugStarter.updateState);
+      } else {
+        XdebugStarter.setCookie('XDEBUG_PROFILE', '1').then(XdebugStarter.updateState);
+      }
+    });
+
+    XdebugStarter.settingsIcon.addEventListener('click', () => {
+      XdebugStarter.settingsSection.classList.remove('hidden');
+    });
+
+    XdebugStarter.settingsSaveButton.addEventListener('click', () => {
+      const settingIdeKey = browser.storage.local.set({
+        ideKey: XdebugStarter.ideKeyInput.value,
+      });
+
+      settingIdeKey.then(() => {
+        XdebugStarter.settingsSection.classList.add('hidden');
+        XdebugStarter.updateState();
+      });
+    });
+
+    XdebugStarter.settingsCancelButton.addEventListener('click', () => {
+      XdebugStarter.settingsSection.classList.add('hidden');
+      const gettingIdeKey = browser.storage.local.get('ideKey');
+      gettingIdeKey.then((storage) => {
+        XdebugStarter.ideKeyInput.value = storage.ideKey;
+      });
+    });
+  },
+
+  init: () => {
+    XdebugStarter.attachHandlers();
+    XdebugStarter.attachListeners();
+    XdebugStarter.updateState();
+
+    browser.storage.local.get('ideKey', (storage) => {
+      if (storage.ideKey === undefined) {
+        const settingIdeKey = browser.storage.local.set({
+          ideKey: 'netbeans-xdebug',
+        });
+        settingIdeKey.then(XdebugStarter.updateState);
+      }
+    });
+  },
+
+  updateState: () => {
+    const resolve = [
+      XdebugStarter.getCookie('XDEBUG_SESSION'),
+      XdebugStarter.getCookie('XDEBUG_TRACE'),
+      XdebugStarter.getCookie('XDEBUG_PROFILE'),
+      browser.storage.local.get('ideKey'),
+    ];
+
+    Promise.all(resolve).then((values) => {
+      XdebugStarter.state.debugging = values[0] ? 1 : 0;
+      XdebugStarter.state.tracing = values[1] ? 1 : 0;
+      XdebugStarter.state.profiling = values[2] ? 1 : 0;
+      XdebugStarter.ideKey = values[3].ideKey;
+
+      XdebugStarter.updateView();
+    });
+  },
+
+  updateView: () => {
+    XdebugStarter.ideKeyInput.value = XdebugStarter.ideKey;
+
+    Object.keys(XdebugStarter.state).forEach((key) => {
+      if (XdebugStarter.state[key]) {
+        XdebugStarter.buttons[key].classList.add('active');
+        return;
+      }
+      XdebugStarter.buttons[key].classList.remove('active');
+    });
+  },
+
+  getActiveTab: () => browser.tabs.query({
     active: true,
     currentWindow: true,
-  });
-}
+  }),
 
-function getCookie(cookieName) {
-  return getActiveTab().then(tabs => browser.cookies.get({
+  getCookie: cookieName => XdebugStarter.getActiveTab().then(tabs => browser.cookies.get({
     url: tabs[0].url,
     name: cookieName,
-  }));
-}
+  })),
 
-function setCookie(cookieName, cookieValue) {
-  return getActiveTab().then((tabs) => {
+  setCookie: (cookieName, cookieValue) => XdebugStarter.getActiveTab().then((tabs) => {
     browser.cookies.set({
       url: tabs[0].url,
       name: cookieName,
       value: cookieValue,
       expirationDate: Date.now() + (60 * 60),
     });
-  });
-}
+  }),
 
-function removeCookie(cookieName) {
-  return getActiveTab().then((tabs) => {
+  removeCookie: cookieName => XdebugStarter.getActiveTab().then((tabs) => {
     browser.cookies.remove({
       url: tabs[0].url,
       name: cookieName,
     });
-  });
-}
+  }),
+};
 
-function updateView() {
-  Object.keys(state).forEach((key) => {
-    if (state[key]) {
-      buttons[key].classList.add('active');
-      return;
-    }
-    buttons[key].classList.remove('active');
-  });
-}
-
-function updateState() {
-  const debuggingPromise = getCookie('XDEBUG_SESSION');
-  const tracingPromise = getCookie('XDEBUG_TRACE');
-  const profilingPromise = getCookie('XDEBUG_PROFILE');
-
-  Promise.all([debuggingPromise, tracingPromise, profilingPromise]).then((values) => {
-    state.debugging = values[0] ? 1 : 0;
-    state.tracing = values[1] ? 1 : 0;
-    state.profiling = values[2] ? 1 : 0;
-
-    updateView();
-  });
-}
-
-updateState();
-
-buttons.debugging.addEventListener('click', () => {
-  if (state.debugging === 1) {
-    removeCookie('XDEBUG_SESSION').then(updateState);
-  } else {
-    const ideKey = localStorage.getItem('idekey');
-    setCookie('XDEBUG_SESSION', ideKey).then(updateState);
-  }
-});
-
-buttons.tracing.addEventListener('click', () => {
-  if (state.tracing === 1) {
-    removeCookie('XDEBUG_TRACE').then(updateState);
-  } else {
-    setCookie('XDEBUG_TRACE', '1').then(updateState);
-  }
-});
-
-buttons.profiling.addEventListener('click', () => {
-  if (state.profiling === 1) {
-    removeCookie('XDEBUG_PROFILE').then(updateState);
-  } else {
-    setCookie('XDEBUG_PROFILE', '1').then(updateState);
-  }
-});
-
-settingsButton.addEventListener('click', () => {
-  settingsSection.classList.remove('hidden');
-});
-
-settingsCancelButton.addEventListener('click', () => {
-  ideKeyInput.value = localStorage.getItem('idekey');
-  settingsSection.classList.add('hidden');
-});
-
-settingsSaveButton.addEventListener('click', () => {
-  localStorage.set('idekey', ideKeyInput.value);
-  settingsSection.classList.add('hidden');
-});
+XdebugStarter.init();

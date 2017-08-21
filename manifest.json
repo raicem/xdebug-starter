@@ -1,15 +1,11 @@
 {
     "manifest_version": 2,
-    "name": "Xdebug Helper",
+    "name": "Xdebug Starter",
     "version": "1.0",
     
     "description": "Allows you to start the debugging session with one click in the browser. Icon made by Dave Gandy from www.flaticon.com.",
 
     "permissions": ["<all_urls>", "tabs", "cookies", "storage"],
-
-    "background": {
-        "scripts": ["background.js"]
-    },
 
     "icons": {
         "48": "icons/icon64.png",
@@ -18,7 +14,7 @@
 
     "browser_action": {
         "default_icon": "icons/icon128.png",
-        "default_title": "Xdebug Helper",
+        "default_title": "Xdebug Starter",
         "default_popup": "popup/popup.html"
     }
 }
