@@ -27,7 +27,7 @@ const XdebugStarter = {
       if (XdebugStarter.state.debugging === 1) {
         XdebugStarter.removeCookie('XDEBUG_SESSION').then(XdebugStarter.updateState);
       } else {
-        const ideKey = localStorage.getItem('idekey');
+        const ideKey = XdebugStarter.ideKey;
         XdebugStarter.setCookie('XDEBUG_SESSION', ideKey).then(XdebugStarter.updateState);
       }
     });
