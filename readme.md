@@ -1,4 +1,4 @@
-# Impulse Blocker
+# Xdebug Starter
 A Firefox extension that allows you to start the debugging session with one click. You can start debugging, tracing, profiling and change the idekey. Built using the new WebExtensions API.
 
 You can get the extension from [here.](https://addons.mozilla.org/en-US/firefox/addon/xdebug-starter/)
