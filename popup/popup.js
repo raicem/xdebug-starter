@@ -133,7 +133,7 @@ const XdebugStarter = {
       url: tabs[0].url,
       name: cookieName,
       value: cookieValue,
-      expirationDate: Date.now() + 3600,
+      expirationDate: Math.floor(Date.now() / 1000) + 3600,
     });
   }).catch(() => console.log('No tab is in place!')),
 
