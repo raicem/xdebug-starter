@@ -101,8 +101,22 @@ const XdebugStarter = {
       XdebugStarter.state.profiling = values[2] ? 1 : 0;
       XdebugStarter.ideKey = values[3].ideKey;
 
+      XdebugStarter.handleXHRListener();
       XdebugStarter.updateView();
     });
+  },
+
+  handleXHRListener: () => {
+    const getBackground = browser.runtime.getBackgroundPage();
+    if (
+      XdebugStarter.state.debugging === 0 &&
+      XdebugStarter.state.tracing === 0 &&
+      XdebugStarter.state.profiling === 0
+    ) {
+      getBackground.then(bg => bg.detachXHRListener());
+    } else {
+      getBackground.then(bg => bg.attachXHRListener());
+    }
   },
 
   updateView: () => {

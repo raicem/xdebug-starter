@@ -1,16 +1,20 @@
 {
     "manifest_version": 2,
     "name": "Xdebug Starter",
-    "version": "1.0.1",
+    "version": "1.1.0",
     
     "description": "A Firefox extension that allows you to start the debugging session with one click. Icon made by Dave Gandy from www.flaticon.com.",
 
-    "permissions": ["<all_urls>", "tabs", "cookies", "storage"],
+    "permissions": ["<all_urls>", "tabs", "cookies", "storage", "webRequest"],
 
     "icons": {
         "48": "icons/icon64.png",
         "96": "icons/icon128.png"
       },
+
+    "background": {
+        "scripts": ["background.js"]
+    },
 
     "browser_action": {
         "default_icon": "icons/icon128.png",
