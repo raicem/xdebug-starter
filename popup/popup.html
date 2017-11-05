@@ -1,29 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="popup.css">
-    <title>Xdebug Starter</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="popup.css">
+  <title>Xdebug Starter</title>
 </head>
+
 <body>
-    <div class="wrapper">
-        <div class="buttons">
-            <button class="button" id="debugging">Debugging</button>
-            <button class="button" id="tracing">Tracing</button>
-            <button class="button" id="profiling">Profiling</button>
-        </div>
-        <div class="settings-button">
-            <img src="settings.png" alt="Settings" id="settings-icon">
-        </div>
-        <div id="settings-section" class="settings-section hidden">
-            <label for="idekey_setting">IDE Key: </label>
-            <input type="text" id="idekey_setting">
-            <button id="settings-cancel-button">Cancel</button>
-            <button id="settings-save-button">Save</button>
-        </div>
+  <div class="wrapper">
+    <div class="buttons">
+      <button class="button" id="debugging" onclick="testing()">Debugging</button>
+      <button class="button" id="tracing">Tracing</button>
+      <button class="button" id="profiling">Profiling</button>
     </div>
-    <script src="popup.js"></script>
+    <div class="settings-button">
+      <img src="settings.png" alt="Settings" id="settings-icon">
+    </div>
+    <div id="settings-section" class="settings-section hidden">
+      <label for="idekey_setting">IDE Key: </label>
+      <input type="text" id="idekey_setting">
+      <button id="settings-cancel-button">Cancel</button>
+      <button id="settings-save-button">Save</button>
+    </div>
+  </div>
+  <script src="popup.js"></script>
 </body>
+
 </html>

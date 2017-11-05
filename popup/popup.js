@@ -131,32 +131,44 @@ const XdebugStarter = {
     });
   },
 
-  getActiveTab: () => browser.tabs.query({
-    active: true,
-    currentWindow: true,
-    url: '*://*/*',
-  }),
+  getActiveTab: () =>
+    browser.tabs.query({
+      active: true,
+      currentWindow: true,
+      url: '*://*/*',
+    }),
 
-  getCookie: cookieName => XdebugStarter.getActiveTab().then(tabs => browser.cookies.get({
-    url: tabs[0].url,
-    name: cookieName,
-  })).catch(() => console.log('No tab is in place!')),
+  getCookie: cookieName =>
+    XdebugStarter.getActiveTab()
+      .then(tabs =>
+        browser.cookies.get({
+          url: tabs[0].url,
+          name: cookieName,
+        }),
+      )
+      .catch(() => console.log('No tab is in place!')),
 
-  setCookie: (cookieName, cookieValue) => XdebugStarter.getActiveTab().then((tabs) => {
-    browser.cookies.set({
-      url: tabs[0].url,
-      name: cookieName,
-      value: cookieValue,
-      expirationDate: Math.floor(Date.now() / 1000) + 3600,
-    });
-  }).catch(() => console.log('No tab is in place!')),
+  setCookie: (cookieName, cookieValue) =>
+    XdebugStarter.getActiveTab()
+      .then((tabs) => {
+        browser.cookies.set({
+          url: tabs[0].url,
+          name: cookieName,
+          value: cookieValue,
+          expirationDate: Math.floor(Date.now() / 1000) + 3600,
+        });
+      })
+      .catch(() => console.log('No tab is in place!')),
 
-  removeCookie: cookieName => XdebugStarter.getActiveTab().then((tabs) => {
-    browser.cookies.remove({
-      url: tabs[0].url,
-      name: cookieName,
-    });
-  }).catch(() => console.log('No tab is in place!')),
+  removeCookie: cookieName =>
+    XdebugStarter.getActiveTab()
+      .then((tabs) => {
+        browser.cookies.remove({
+          url: tabs[0].url,
+          name: cookieName,
+        });
+      })
+      .catch(() => console.log('No tab is in place!')),
 };
 
 XdebugStarter.init();
