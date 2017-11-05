@@ -8,7 +8,8 @@ function addXdebugCookie(e) {
 }
 
 function attachXHRListener() {
-  console.log('attaching xhr listener');
+  browser.browserAction.setIcon({ path: 'icons/icon128-on.png' });
+
   browser.webRequest.onBeforeSendHeaders.addListener(
     addXdebugCookie,
     { urls: ['<all_urls>'], types: ['xmlhttprequest'] },
@@ -17,6 +18,6 @@ function attachXHRListener() {
 }
 
 function detachXHRListener() {
-  console.log('detaching xhr listener');
+  browser.browserAction.setIcon({ path: 'icons/icon128.png' });
   browser.webRequest.onBeforeSendHeaders.removeListener(addXdebugCookie);
 }
